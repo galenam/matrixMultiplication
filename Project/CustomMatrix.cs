@@ -26,13 +26,44 @@ namespace MatrixMultipling.Project
             }
         }
 
-        public CustomMatrix Multiple(CustomMatrix second)
+        public CustomMatrix(int[,] values)
         {
-            if (Values == null || second.Values == null || Values.GetLength(0) != second.Values.GetLength(1))
+            if (values == null || values.GetLength(0) == 0 || values.GetLength(1) == 0)
+            {
+                throw new ArgumentException("Error data");
+            }
+            Height = values.GetLength(0);
+            Width = values.GetLength(1);
+            Values = new int[Height, Width];
+            for (var i = 0; i < Height; i++)
+            {
+                for (var j = 0; j < Width; j++)
+                {
+                    Values[i, j] = values[i, j];
+                }
+            }
+        }
+
+        public static CustomMatrix operator *(CustomMatrix first, CustomMatrix second)
+        {
+            if (first.Values == null || second.Values == null || first.Values.GetLength(0) != second.Values.GetLength(1))
             {
                 throw new ArgumentException("Matrixs are not consistent");
             }
-            return null;
+            var values = new int[first.Height, second.Width];
+
+            for (var j = 0; j < second.Width; j++)
+            {
+                for (var i = 0; i < first.Height; i++)
+                {
+                    for (var r = 0; r < first.Width; r++)
+                    {
+                        values[i, j] += first.Values[i, r] * second.Values[r, j];
+                    }
+                }
+            }
+
+            return new CustomMatrix(values);
         }
 
         public bool Equals(CustomMatrix other)

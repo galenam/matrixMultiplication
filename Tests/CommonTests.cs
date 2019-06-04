@@ -45,7 +45,7 @@ namespace MatrixMultipling.Tests
 
             var m1 = new CustomMatrix(4, m1Data);
             var m2 = new CustomMatrix(2, m1Data);
-            Assert.Throws(typeof(ArgumentException), () => m1.Multiple(m2));
+            Assert.Throws<ArgumentException>(delegate { var customMatrix = m1 * m2; });
         }
 
         [Test]
@@ -55,16 +55,11 @@ namespace MatrixMultipling.Tests
             var m2Data = new int[6] { 1, 2, 3, 3, 4, 6 };
 
             var m1 = new CustomMatrix(3, m1Data);
-            var m2 = new CustomMatrix(2, m1Data);
-            var m3 = m1.Multiple(m2);
+            var m2 = new CustomMatrix(2, m2Data);
+            var m3 = m1 * m2;
 
             var correctData = new CustomMatrix(3, new int[] { 7, 10, 15, 15, 22, 33, 14, 22, 33 });
             Assert.That(m3.Equals(correctData));
-            /*
-            7 10 15
-            15 22 33
-            14 22 33                        
-             */
         }
     }
 }
