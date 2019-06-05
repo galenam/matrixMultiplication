@@ -15,16 +15,10 @@ namespace MatrixMultipling.Tests
         }
 
         [Test]
-        public void TestException()
-        {
-            var m1Data = new int[21] { 1, 2, 3, 4, 5, 3, 2, 4, 5, 4, 2, 2, 34, 5, 5, 5, 6, 7, 2, 5, 3 };
-            Assert.Throws(typeof(ArgumentException), () => new CustomMatrix(4, m1Data));
-        }
-        [Test]
         public void TestFillArray()
         {
-            var m1Data = new int[6] { 1, 2, 3, 4, 5, 3 };
-            var m1 = new CustomMatrix(3, m1Data);
+            var m1Data = new int[3, 2] { { 1, 2 }, { 3, 4 }, { 5, 3 } };
+            var m1 = new CustomMatrix(m1Data);
             Assert.That(m1 != null);
             Assert.That(m1.Values != null);
             Assert.That(m1.Values.GetLength(0) == 3);
@@ -40,25 +34,38 @@ namespace MatrixMultipling.Tests
         [Test]
         public void TestExceptionMultipliation()
         {
-            var m1Data = new int[20] { 1, 2, 3, 4, 5, 3, 2, 4, 5, 4, 2, 2, 34, 5, 5, 5, 6, 7, 2, 5 };
-            var m2Data = new int[4] { 1, 2, 3, 4 };
+            var m1Data = new int[5, 4] { { 1, 2, 3, 4 }, { 5, 3, 2, 4 }, { 5, 4, 2, 2 }, { 34, 5, 5, 5 }, { 6, 7, 2, 5 } };
+            var m2Data = new int[,] { { 1, 2 }, { 3, 4 } };
 
-            var m1 = new CustomMatrix(4, m1Data);
-            var m2 = new CustomMatrix(2, m1Data);
+            var m1 = new CustomMatrix(m1Data);
+            var m2 = new CustomMatrix(m1Data);
             Assert.Throws<ArgumentException>(delegate { var customMatrix = m1 * m2; });
         }
 
         [Test]
         public void TestClassicMultiplication()
         {
-            var m1Data = new int[6] { 1, 2, 3, 4, 5, 3 };
-            var m2Data = new int[6] { 1, 2, 3, 3, 4, 6 };
+            var m1Data = new int[3, 2] { { 1, 2 }, { 3, 4 }, { 5, 3 } };
+            var m2Data = new int[2, 3] { { 1, 2, 3 }, { 3, 4, 6 } };
 
-            var m1 = new CustomMatrix(3, m1Data);
-            var m2 = new CustomMatrix(2, m2Data);
+            var m1 = new CustomMatrix(m1Data);
+            var m2 = new CustomMatrix(m2Data);
+            var m3 = m1 * m2;
+            var correctData = new CustomMatrix(new int[,] { { 7, 10, 15 }, { 15, 22, 33 }, { 14, 22, 33 } });
+            Assert.That(m3.Equals(correctData));
+        }
+
+        [Test]
+        public void TestClassicMultiplicationNonSquare()
+        {
+            var m1Data = new int[4, 2] { { 1, 2 }, { 3, 4 }, { 5, 3 }, { 7, 9 } };
+            var m2Data = new int[2, 3] { { 1, 2, 3 }, { 3, 4, 6 } };
+
+            var m1 = new CustomMatrix(m1Data);
+            var m2 = new CustomMatrix(m2Data);
             var m3 = m1 * m2;
 
-            var correctData = new CustomMatrix(3, new int[] { 7, 10, 15, 15, 22, 33, 14, 22, 33 });
+            var correctData = new CustomMatrix(new int[,] { { 7, 10, 15 }, { 15, 22, 33 }, { 14, 22, 33 }, { 34, 50, 75 } });
             Assert.That(m3.Equals(correctData));
         }
     }

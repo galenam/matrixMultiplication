@@ -4,27 +4,22 @@ namespace MatrixMultipling.Project
 {
     public class CustomMatrix : IEquatable<CustomMatrix>
     {
-        public int Width { get; private set; }
-        public int Height { get; private set; }
-        public int[,] Values { get; private set; }
-
-        public CustomMatrix(int height, int[] values)
+        public int Width
         {
-            if (height == 0 || values.GetLength(0) % height != 0)
+            get
             {
-                throw new ArgumentException("Error data");
-            }
-            Height = height;
-            Width = values.GetLength(0) / height > 0 ? values.GetLength(0) / height : 1;
-            Values = new int[Height, Width];
-            for (var i = 0; i < Height; i++)
-            {
-                for (var j = 0; j < Width; j++)
-                {
-                    Values[i, j] = values[i * Width + j];
-                }
+                return Values != null ? Values.GetLength(1) : 0;
             }
         }
+
+        public int Height
+        {
+            get
+            {
+                return Values != null ? Values.GetLength(0) : 0;
+            }
+        }
+        public int[,] Values { get; private set; }
 
         public CustomMatrix(int[,] values)
         {
@@ -32,9 +27,7 @@ namespace MatrixMultipling.Project
             {
                 throw new ArgumentException("Error data");
             }
-            Height = values.GetLength(0);
-            Width = values.GetLength(1);
-            Values = new int[Height, Width];
+            Values = new int[values.GetLength(0), values.GetLength(1)];
             for (var i = 0; i < Height; i++)
             {
                 for (var j = 0; j < Width; j++)
@@ -46,7 +39,7 @@ namespace MatrixMultipling.Project
 
         public static CustomMatrix operator *(CustomMatrix first, CustomMatrix second)
         {
-            if (first.Values == null || second.Values == null || first.Values.GetLength(0) != second.Values.GetLength(1))
+            if (first.Values == null || second.Values == null || first.Width != second.Height)
             {
                 throw new ArgumentException("Matrixs are not consistent");
             }
@@ -72,10 +65,10 @@ namespace MatrixMultipling.Project
             if (object.ReferenceEquals(this, other)) return true;
             if (Width != other.Width || Height != other.Height) return false;
             if (Values == null && other.Values == null) return true;
-            if (Values.GetLength(0) != other.Values.GetLength(0) || Values.GetLength(1) != other.Values.GetLength(1)) return false;
-            for (var i = 0; i < Values.GetLength(0); i++)
+
+            for (var i = 0; i < Height; i++)
             {
-                for (var j = 0; j < Values.GetLength(1); j++)
+                for (var j = 0; j < Width; j++)
                 {
                     if (Values[i, j] != other.Values[i, j]) return false;
                 }
