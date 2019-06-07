@@ -56,17 +56,27 @@ namespace MatrixMultipling.Tests
         }
 
         [Test]
-        public void TestClassicMultiplicationNonSquare()
+        public void TestClassicMultiplicationResultNonSquare()
         {
             var m1Data = new int[4, 2] { { 1, 2 }, { 3, 4 }, { 5, 3 }, { 7, 9 } };
             var m2Data = new int[2, 3] { { 1, 2, 3 }, { 3, 4, 6 } };
 
-            var m1 = new CustomMatrix(m1Data);
-            var m2 = new CustomMatrix(m2Data);
-            var m3 = m1 * m2;
+            var resultData = new MultiplicationAlgoritm(m1Data, m2Data).Classic();
 
-            var correctData = new CustomMatrix(new int[,] { { 7, 10, 15 }, { 15, 22, 33 }, { 14, 22, 33 }, { 34, 50, 75 } });
-            Assert.That(m3.Equals(correctData));
+            var correctData = new int[,] { { 7, 10, 15 }, { 15, 22, 33 }, { 14, 22, 33 }, { 34, 50, 75 } };
+            Assert.That(resultData.CompareContent(correctData));
         }
+
+        [Test]
+        public void TestStrassenMultiplication()
+        {
+            var m1Data = new int[3, 2] { { 1, 2 }, { 3, 4 }, { 5, 3 } };
+            var m2Data = new int[2, 3] { { 1, 2, 3 }, { 3, 4, 6 } };
+            var resultData = new MultiplicationAlgoritm(m1Data, m2Data).Strassen();
+
+            var correctData = new int[,] { { 7, 10, 15 }, { 15, 22, 33 }, { 14, 22, 33 } };
+            Assert.That(resultData.Equals(correctData));
+        }
+
     }
 }
