@@ -23,7 +23,7 @@ namespace MatrixMultipling.Project
             {
                 throw new ArgumentException("Matrixs are not square");
             }
-            int[,] firstPower2, secondPower2;            
+            int[,] firstPower2, secondPower2;
 
             if (MathExtensions.IsPowerOfTwo(fHeight))
             {
@@ -32,20 +32,29 @@ namespace MatrixMultipling.Project
             }
             else
             {
-                // todo : сделать матрицу квадратной и заполнить недостающее 0
                 firstPower2 = MathExtensions.CreateSquareMatrixPower2(first);
                 secondPower2 = MathExtensions.CreateSquareMatrixPower2(second);
             }
-            // todo: исправитьfirst, second на firstPower2, secondPower2
-            var values = new int[fHeight, sWidth];
 
-            var p1 = (first[0, 0] + first[1, 1]) * (second[0, 0] + second[1, 1]);
-            var p2 = (first[1, 0] + first[1, 1]) * second[0, 0];
-            var p3 = first[0, 0] * (second[0, 1] - second[1, 1]);
-            var p4 = first[1, 1] * (second[1, 0] - second[0, 0]);
-            var p5 = (first[0, 0] + first[0, 1]) * second[1, 1];
-            var p6 = (first[1, 0] - first[0, 0]) * (second[0, 0] + second[0, 1]);
-            var p7 = (first[0, 1] - first[1, 1]) * (second[1, 0] + second[1, 1]);
+            var newHeigth = firstPower2.GetLength(0);
+            var newWidth = firstPower2.GetLength(1);
+            var values = new int[newHeigth, newWidth];
+
+            /*  todo: идея : разделить матрицы на 4 подматрицы с размером n/2 * n/2
+            вычислить 10 подматриц с операциями сложения-вычитания firstPower2[0, 0] + firstPower2[1, 1]
+            если размер матрицы = 1, то выполнить скалярное умножение
+            иначе рекурсивно делить матрицы на подматрицы дальше
+            */
+
+            //var s1 = 
+
+            var p1 = (firstPower2[0, 0] + firstPower2[1, 1]) * (secondPower2[0, 0] + secondPower2[1, 1]);
+            var p2 = (firstPower2[1, 0] + firstPower2[1, 1]) * secondPower2[0, 0];
+            var p3 = firstPower2[0, 0] * (secondPower2[0, 1] - secondPower2[1, 1]);
+            var p4 = firstPower2[1, 1] * (secondPower2[1, 0] - secondPower2[0, 0]);
+            var p5 = (firstPower2[0, 0] + firstPower2[0, 1]) * secondPower2[1, 1];
+            var p6 = (firstPower2[1, 0] - firstPower2[0, 0]) * (secondPower2[0, 0] + secondPower2[0, 1]);
+            var p7 = (firstPower2[0, 1] - firstPower2[1, 1]) * (secondPower2[1, 0] + secondPower2[1, 1]);
 
             var c00 = p1 + p4 - p5 + p7;
             var c01 = p3 + p5;
