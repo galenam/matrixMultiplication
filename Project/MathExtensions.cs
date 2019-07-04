@@ -1,4 +1,5 @@
 ﻿using System;
+using MatrixMultipling.Project.Enums;
 
 namespace MatrixMultipling.Project
 {
@@ -8,6 +9,7 @@ namespace MatrixMultipling.Project
         {
             return (x > 1) && ((x & (x - 1)) == 0);
         }
+
         public static bool CompareContent(this int[,] first, int[,] second)
         {
             if (second == null && first == null) return true;
@@ -83,5 +85,79 @@ namespace MatrixMultipling.Project
             }
             return true;
         }
+
+        public static (int iBegin, int iEnd, int jBegin, int jEnd) GetIndexes(PartOfMatrix part, int dimension)
+        {
+            int iBegin = 0, iEnd = 0, jBegin = 0, jEnd = 0;
+            if (!IsPowerOfTwo(dimension))
+            {
+                return (iBegin: iBegin, iEnd: iEnd, jBegin: jBegin, jEnd: jEnd);
+            }
+
+            if (part == PartOfMatrix.LeftTop)
+            {
+                iBegin = 0;
+                iEnd = dimension / 2;
+                jBegin = 0;
+                jEnd = dimension / 2;
+            }
+            if (part == PartOfMatrix.LeftBottom)
+            {
+                iBegin = dimension / 2;
+                iEnd = dimension;
+                jBegin = 0;
+                jEnd = dimension / 2;
+            }
+            if (part == PartOfMatrix.RightTop)
+            {
+                iBegin = 0;
+                iEnd = dimension / 2;
+                jBegin = dimension / 2;
+                jEnd = dimension;
+            }
+            if (part == PartOfMatrix.RightBottom)
+            {
+                iBegin = dimension / 2;
+                iEnd = dimension;
+                jBegin = dimension / 2;
+                jEnd = dimension;
+            }
+            return (iBegin: iBegin, iEnd: iEnd, jBegin: jBegin, jEnd: jEnd);
+        }
+
+        // здесь должна быть рекурсия до матрицы 1*1
+        public static int[,] OperationsMatrix(MatrixPart mPart)
+        {
+            if (mPart == null || mPart.Data == null) return new int[0, 0];
+            var indexesFirst = GetIndexes(mPart.PartFirst, mPart.Data.GetLength(0));
+            var indexesSecond = GetIndexes(mPart.PartSecond, mPart.Data.GetLength(0));
+
+            var result = new int[indexesFirst.iEnd - indexesFirst.iBegin, indexesFirst.jEnd - indexesFirst.jBegin];
+
+            var iSecond = indexesSecond.iBegin;
+            var iResult = 0;
+            for (var i = indexesFirst.iBegin; i < indexesFirst.iEnd; i++)
+            {
+                var jSecond = indexesSecond.jBegin;
+                var jResult = 0;
+                for (var j = indexesFirst.jBegin; j < indexesFirst.jEnd; j++)
+                {
+                    if (mPart.Operation == MatrixOperation.Subtraction)
+                    {
+                        result[iResult, jResult] = mPart.Data[i, j] - mPart.Data[iSecond, jSecond];
+                    }
+                    if (mPart.Operation == MatrixOperation.Summation)
+                    {
+                        result[iResult, jResult] = mPart.Data[i, j] + mPart.Data[iSecond, jSecond];
+                    }
+                    jSecond++;
+                    jResult++;
+                }
+                iSecond++;
+                iResult++;
+            }
+            return result;
+        }
+
     }
 }
