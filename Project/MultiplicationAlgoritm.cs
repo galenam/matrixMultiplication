@@ -1,4 +1,5 @@
 using System;
+using MatrixMultipling.Project.Enums;
 
 namespace MatrixMultipling.Project
 {
@@ -45,8 +46,59 @@ namespace MatrixMultipling.Project
             если размер матрицы = 1, то выполнить скалярное умножение
             иначе рекурсивно делить матрицы на подматрицы дальше
             */
-
-            //var s1 = 
+            var matrixPartFirst = new MatrixPart(first);
+            var matrixPartSecond = new MatrixPart(second);
+            //s1 = b12-b22
+            matrixPartSecond.Operation = MatrixOperation.Subtraction;
+            matrixPartSecond.PartFirst = PartOfMatrix.RightTop;
+            matrixPartSecond.PartSecond = PartOfMatrix.RightBottom;
+            var s1 = MathExtensions.OperationsMatrix(matrixPartSecond);
+            //s2=a11+a12
+            matrixPartFirst.Operation = MatrixOperation.Summation;
+            matrixPartFirst.PartFirst = PartOfMatrix.LeftTop;
+            matrixPartFirst.PartSecond = PartOfMatrix.RightTop;
+            var s2 = MathExtensions.OperationsMatrix(matrixPartFirst);
+            //s3=a21+a22
+            matrixPartFirst.Operation = MatrixOperation.Summation;
+            matrixPartFirst.PartFirst = PartOfMatrix.LeftBottom;
+            matrixPartFirst.PartSecond = PartOfMatrix.RightBottom;
+            var s3 = MathExtensions.OperationsMatrix(matrixPartFirst);
+            //s4=b21-b11
+            matrixPartSecond.Operation = MatrixOperation.Subtraction;
+            matrixPartSecond.PartFirst = PartOfMatrix.LeftBottom;
+            matrixPartSecond.PartSecond = PartOfMatrix.LeftTop;
+            var s4 = MathExtensions.OperationsMatrix(matrixPartSecond);
+            //s5=a11+a22
+            matrixPartFirst.Operation = MatrixOperation.Summation;
+            matrixPartFirst.PartFirst = PartOfMatrix.LeftTop;
+            matrixPartFirst.PartSecond = PartOfMatrix.RightBottom;
+            var s5 = MathExtensions.OperationsMatrix(matrixPartFirst);
+            //s6=b11+b22
+            matrixPartSecond.Operation = MatrixOperation.Summation;
+            matrixPartSecond.PartFirst = PartOfMatrix.LeftTop;
+            matrixPartSecond.PartSecond = PartOfMatrix.RightBottom;
+            var s6 = MathExtensions.OperationsMatrix(matrixPartSecond);
+            //s7=a12-a22
+            matrixPartFirst.Operation = MatrixOperation.Subtraction;
+            matrixPartFirst.PartFirst = PartOfMatrix.RightTop;
+            matrixPartFirst.PartSecond = PartOfMatrix.RightBottom;
+            var s7 = MathExtensions.OperationsMatrix(matrixPartFirst);
+            //s8=b21+b22
+            matrixPartSecond.Operation = MatrixOperation.Summation;
+            matrixPartSecond.PartFirst = PartOfMatrix.LeftBottom;
+            matrixPartSecond.PartSecond = PartOfMatrix.RightBottom;
+            var s8 = MathExtensions.OperationsMatrix(matrixPartSecond);
+            //s9=a11-a21
+            matrixPartFirst.Operation = MatrixOperation.Subtraction;
+            matrixPartFirst.PartFirst = PartOfMatrix.LeftTop;
+            matrixPartFirst.PartSecond = PartOfMatrix.LeftBottom;
+            var s9 = MathExtensions.OperationsMatrix(matrixPartFirst);
+            //s10=b11+b12
+            matrixPartSecond.Operation = MatrixOperation.Summation;
+            matrixPartSecond.PartFirst = PartOfMatrix.LeftTop;
+            matrixPartSecond.PartSecond = PartOfMatrix.RightTop;
+            var s10 = MathExtensions.OperationsMatrix(matrixPartSecond);
+            // выделить подматрицы без операций : b11, a11, a22, b22
 
             var p1 = (firstPower2[0, 0] + firstPower2[1, 1]) * (secondPower2[0, 0] + secondPower2[1, 1]);
             var p2 = (firstPower2[1, 0] + firstPower2[1, 1]) * secondPower2[0, 0];

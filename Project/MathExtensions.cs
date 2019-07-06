@@ -125,13 +125,12 @@ namespace MatrixMultipling.Project
             return (iBegin: iBegin, iEnd: iEnd, jBegin: jBegin, jEnd: jEnd);
         }
 
-        // здесь должна быть рекурсия до матрицы 1*1
         public static int[,] OperationsMatrix(MatrixPart mPart)
         {
             if (mPart == null || mPart.Data == null) return new int[0, 0];
+
             var indexesFirst = GetIndexes(mPart.PartFirst, mPart.Data.GetLength(0));
             var indexesSecond = GetIndexes(mPart.PartSecond, mPart.Data.GetLength(0));
-
             var result = new int[indexesFirst.iEnd - indexesFirst.iBegin, indexesFirst.jEnd - indexesFirst.jBegin];
 
             var iSecond = indexesSecond.iBegin;

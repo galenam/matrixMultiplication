@@ -59,7 +59,6 @@ namespace MatrixMultipling.Tests
             yield return new MatrixPart(new int[,] { { 4, 1 }, { 4, 5 } }) { Operation = MatrixOperation.Subtraction, PartFirst = PartOfMatrix.LeftBottom, PartSecond = PartOfMatrix.LeftTop };
             yield return new MatrixPart(new int[,] { { 5, 7 }, { 8, 10 } }) { Operation = MatrixOperation.Summation, PartFirst = PartOfMatrix.LeftTop, PartSecond = PartOfMatrix.RightTop };
             yield return new MatrixPart(new int[,] { { 6, 10 }, { 7, 14 } }) { Operation = MatrixOperation.Summation, PartFirst = PartOfMatrix.LeftBottom, PartSecond = PartOfMatrix.RightBottom };
-
         }
 
         [TestCaseSource(nameof(TestSourcesPart))]
@@ -95,24 +94,7 @@ namespace MatrixMultipling.Tests
             Assert.AreEqual(result.jBegin, data.correctAnswer.jBegin);
             Assert.AreEqual(result.jEnd, data.correctAnswer.jEnd);
         }
-        /*
-                private bool CompareContent(MatrixPart mPart, int[,] correctAnswer)
-                {
-                    var indexes = MathExtensions.GetIndexes(mPart.Part, mPart.First.GetLength(0));
-                    int iInner = 0, jInner = 0;
-                    for (var i = indexes.iBegin; i < indexes.iEnd; i++)
-                    {
-                        for (var j = indexes.jBegin; j < indexes.jEnd; j++)
-                        {
-                            if (correctAnswer[iInner, jInner] != mPart.Destination[i, j])
-                            {
-                                return false;
-                            }
-                            jInner++;
-                        }
-                        iInner++;
-                    }
-                    return true;
-                }*/
+
+        // используя подматрицы (n/2 * n/2) и 10 матриц, созданных в методе OperationsMatrix вычислить рекурсивно произведения P1 .. P7
     }
 }
