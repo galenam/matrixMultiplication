@@ -94,7 +94,56 @@ namespace MatrixMultipling.Tests
             Assert.AreEqual(result.jBegin, data.correctAnswer.jBegin);
             Assert.AreEqual(result.jEnd, data.correctAnswer.jEnd);
         }
+        /*
+                // todo : написать TestCaseSource и сам метод RecursiveMultiply
+                public void TestRecursiveMatrixMultipling(int[,] correctAnswer)
+                {
+                    var matrixFirst = MathExtensions.CreateMatrixPart(new int[4, 4] { { 1, 7, 5, 6 }, { 5, 3, 3, 6 }, { 3, 5, 3, 2 }, { 5, 7, 2, 6 } }, PartOfMatrix.LeftTop);
+                    var matrixSecond = new int[2, 2] { { 3, 9 }, { 5, 8 } };
+                    var result = MathExtensions.RecursiveMultiply(matrixFirst, matrixSecond);
+                    Assert.AreEqual(MathExtensions.CompareContent(result, correctAnswer), true);
+                }
+                 */
+        private static IEnumerable<(Stack<int[,]> data, Stack<MatrixOperation> operations, int[,] correctResult)> Source4TestOperationsMatrixStack()
+        {
+            Stack<int[,]> data1 = new Stack<int[,]>();
+            data1.Push(new int[2, 2] { { 1, 2 }, { 4, 5 } });
+            data1.Push(new int[2, 2] { { 3, 2 }, { 4, 7 } });
+            data1.Push(new int[2, 2] { { 9, 0 }, { 2, 6 } });
+            data1.Push(new int[2, 2] { { 7, 8 }, { 3, 0 } });
 
-        // используя подматрицы (n/2 * n/2) и 10 матриц, созданных в методе OperationsMatrix вычислить рекурсивно произведения P1 .. P7
+            var operations1 = new Stack<MatrixOperation>();
+            operations1.Push(MatrixOperation.Summation);
+            operations1.Push(MatrixOperation.Subtraction);
+            operations1.Push(MatrixOperation.Summation);
+            yield return (data1, operations1, new int[2, 2] { { 14, 8 }, { 5, 4 } });
+
+            Stack<int[,]> data2 = new Stack<int[,]>();
+            data2.Push(new int[2, 2] { { 1, 2 }, { 4, 5 } });
+            data2.Push(new int[2, 2] { { 3, 2 }, { 4, 7 } });
+
+            var operations2 = new Stack<MatrixOperation>();
+            operations2.Push(MatrixOperation.Summation);
+            yield return (data2, operations2, new int[2, 2] { { 4, 4 }, { 8, 12 } });
+
+            Stack<int[,]> data3 = new Stack<int[,]>();
+            data3.Push(new int[2, 2] { { 1, 2 }, { 4, 5 } });
+            data3.Push(new int[2, 2] { { 3, 2 }, { 4, 7 } });
+            data3.Push(new int[2, 2] { { 9, 0 }, { 2, 6 } });
+            data3.Push(new int[2, 2] { { 7, 8 }, { 3, 0 } });
+
+            var operations3 = new Stack<MatrixOperation>();
+            operations3.Push(MatrixOperation.Subtraction);
+            operations3.Push(MatrixOperation.Subtraction);
+            operations3.Push(MatrixOperation.Summation);
+            yield return (data3, operations3, new int[2, 2] { { 12, 4 }, { -3, -6 } });
+        }
+
+        [TestCaseSource(nameof(Source4TestOperationsMatrixStack))]
+        public void TestOperationsMatrixStack((Stack<int[,]> data, Stack<MatrixOperation> operations, int[,] correctResult) source)
+        {
+            var result = MathExtensions.OperationsMatrix(source.data, source.operations);
+            Assert.AreEqual(MathExtensions.CompareContent(result, source.correctResult), true);
+        }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using MatrixMultipling.Project.Enums;
 
 namespace MatrixMultipling.Project
@@ -131,32 +133,75 @@ namespace MatrixMultipling.Project
 
             var indexesFirst = GetIndexes(mPart.PartFirst, mPart.Data.GetLength(0));
             var indexesSecond = GetIndexes(mPart.PartSecond, mPart.Data.GetLength(0));
-            var result = new int[indexesFirst.iEnd - indexesFirst.iBegin, indexesFirst.jEnd - indexesFirst.jBegin];
+            var result = OperationMatrixInternal(indexesFirst, indexesSecond, mPart.Operation, mPart.Data);
+            return result;
+        }
 
-            var iSecond = indexesSecond.iBegin;
-            var iResult = 0;
-            for (var i = indexesFirst.iBegin; i < indexesFirst.iEnd; i++)
+        private static int[,] OperationMatrixInternal((int iBegin, int iEnd, int jBegin, int jEnd) indexesFirst,
+        (int iBegin, int iEnd, int jBegin, int jEnd) indexesSecond, MatrixOperation operation, int[,] dataFirst, int[,] dataSecond = null)
+        {
+            var result = new int[indexesFirst.iEnd - indexesFirst.iBegin, indexesFirst.jEnd - indexesFirst.jBegin];
+            if (dataSecond == null)
             {
-                var jSecond = indexesSecond.jBegin;
-                var jResult = 0;
-                for (var j = indexesFirst.jBegin; j < indexesFirst.jEnd; j++)
+                dataSecond = dataFirst;
+            }
+            for (var i = 0; i < result.GetLength(0); i++)
+            {
+                for (var j = 0; j < result.GetLength(1); j++)
                 {
-                    if (mPart.Operation == MatrixOperation.Subtraction)
+                    result[i, j] = dataFirst[indexesFirst.iBegin + i, indexesFirst.jBegin + j];
+                    if (operation == MatrixOperation.Subtraction)
                     {
-                        result[iResult, jResult] = mPart.Data[i, j] - mPart.Data[iSecond, jSecond];
+                        result[i, j] -= dataSecond[indexesSecond.iBegin + i, indexesSecond.jBegin + j];
                     }
-                    if (mPart.Operation == MatrixOperation.Summation)
+                    if (operation == MatrixOperation.Summation)
                     {
-                        result[iResult, jResult] = mPart.Data[i, j] + mPart.Data[iSecond, jSecond];
+                        result[i, j] += dataSecond[indexesSecond.iBegin + i, indexesSecond.jBegin + j];
                     }
-                    jSecond++;
-                    jResult++;
                 }
-                iSecond++;
-                iResult++;
             }
             return result;
         }
 
+        public static int[,] CreateMatrixPart(int[,] v1, PartOfMatrix part)
+        {
+            if (v1 == null || v1.GetLength(0) == 0)
+            {
+                return new int[0, 0];
+            }
+            var matrix = v1;
+            if (!IsPowerOfTwo(v1.GetLength(0)))
+            {
+                matrix = CreateSquareMatrixPower2(v1);
+            }
+            var indexes = MathExtensions.GetIndexes(part, matrix.GetLength(0));
+            var data = new int[indexes.iEnd - indexes.iBegin, indexes.jEnd - indexes.jBegin];
+            for (var i = 0; i < data.GetLength(0); i++)
+            {
+                for (var j = 0; j < data.GetLength(1); j++)
+                {
+                    data[i, j] = matrix[indexes.iBegin + i, indexes.jBegin + j];
+                }
+            }
+            return data;
+        }
+
+        public static int[,] OperationsMatrix(Stack<int[,]> datas, Stack<MatrixOperation> operations)
+        {
+            if (datas == null || !datas.Any() || operations == null || !operations.Any() || operations.Count != datas.Count - 1
+            || operations.Count < 1 || datas.Count < 2)
+            {
+                return new int[0, 0];
+            }
+            int[,] result = null;
+            foreach (var operation in operations)
+            {
+                var dataFirst = result == null ? datas.Pop() : result;
+                var dataSecond = datas.Pop();
+                result = OperationMatrixInternal((0, dataFirst.GetLength(0), 0, dataFirst.GetLength(1)),
+                (0, dataSecond.GetLength(0), 0, dataSecond.GetLength(1)), operation, dataFirst, dataSecond);
+            }
+            return result;
+        }
     }
 }

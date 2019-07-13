@@ -1,10 +1,14 @@
 using System;
+using System.Collections.Generic;
 using MatrixMultipling.Project.Enums;
 
 namespace MatrixMultipling.Project
 {
     public static class MultiplicationAlgoritm
     {
+        public const int SmallMatrixDimension = 2;
+
+        public static bool IsSmallEnough(int dimension) => dimension <= SmallMatrixDimension;
         public static int[,] Strassen(int[,] first, int[,] second)
         {
             if (first == null || second == null)
@@ -46,8 +50,8 @@ namespace MatrixMultipling.Project
             если размер матрицы = 1, то выполнить скалярное умножение
             иначе рекурсивно делить матрицы на подматрицы дальше
             */
-            var matrixPartFirst = new MatrixPart(first);
-            var matrixPartSecond = new MatrixPart(second);
+            var matrixPartFirst = new MatrixPart(firstPower2);
+            var matrixPartSecond = new MatrixPart(secondPower2);
             //s1 = b12-b22
             matrixPartSecond.Operation = MatrixOperation.Subtraction;
             matrixPartSecond.PartFirst = PartOfMatrix.RightTop;
@@ -100,18 +104,47 @@ namespace MatrixMultipling.Project
             var s10 = MathExtensions.OperationsMatrix(matrixPartSecond);
             // выделить подматрицы без операций : b11, a11, a22, b22
 
-            var p1 = (firstPower2[0, 0] + firstPower2[1, 1]) * (secondPower2[0, 0] + secondPower2[1, 1]);
-            var p2 = (firstPower2[1, 0] + firstPower2[1, 1]) * secondPower2[0, 0];
-            var p3 = firstPower2[0, 0] * (secondPower2[0, 1] - secondPower2[1, 1]);
-            var p4 = firstPower2[1, 1] * (secondPower2[1, 0] - secondPower2[0, 0]);
-            var p5 = (firstPower2[0, 0] + firstPower2[0, 1]) * secondPower2[1, 1];
-            var p6 = (firstPower2[1, 0] - firstPower2[0, 0]) * (secondPower2[0, 0] + secondPower2[0, 1]);
-            var p7 = (firstPower2[0, 1] - firstPower2[1, 1]) * (secondPower2[1, 0] + secondPower2[1, 1]);
+            var a11 = MathExtensions.CreateMatrixPart(firstPower2, PartOfMatrix.LeftTop);
+            var a22 = MathExtensions.CreateMatrixPart(firstPower2, PartOfMatrix.RightBottom);
+            var b11 = MathExtensions.CreateMatrixPart(secondPower2, PartOfMatrix.LeftTop);
+            var b22 = MathExtensions.CreateMatrixPart(secondPower2, PartOfMatrix.RightBottom);
 
-            var c00 = p1 + p4 - p5 + p7;
-            var c01 = p3 + p5;
-            var c10 = p2 + p4;
-            var c11 = p1 - p2 + p3 + p6;
+            int[,] p1, p2, p3, p4, p5, p6, p7;
+
+            if (IsSmallEnough(firstPower2.GetLength(0)))
+            {
+                p1 = Classic(a11, s1);
+                p2 = Classic(s2, b22);
+                p3 = Classic(s3, b11);
+                p4 = Classic(a22, s4);
+                p5 = Classic(s5, s6);
+                p6 = Classic(s7, s8);
+                p7 = Classic(s9, s10);
+            }
+            else
+            {
+                p1 = Strassen(a11, s1);
+                p2 = Strassen(s2, b22);
+                p3 = Strassen(s3, b11);
+                p4 = Strassen(a22, s4);
+                p5 = Strassen(s5, s6);
+                p6 = Strassen(s7, s8);
+                p7 = Strassen(s9, s10);
+            }
+
+            //var c11 = p5 + p4 - p2 + p6;
+            var stactC11 = new Stack<int[,]>();
+            stactC11.Push(p6);
+            stactC11.Push(p2);
+            stactC11.Push(p4);
+            stactC11.Push(p5);
+
+            var stackOperationsC11 = new Stack<MatrixOperation>();
+            stackOperationsC11.Push(MatrixOperation.Summation);
+            stackOperationsC11.Push(MatrixOperation.Subtraction);
+            stackOperationsC11.Push(MatrixOperation.Summation);
+
+            int[,] c11 = MathExtensions.OperationsMatrix(stactC11, stackOperationsC11);
 
             throw new NotImplementedException();
         }
