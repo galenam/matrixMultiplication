@@ -94,16 +94,7 @@ namespace MatrixMultipling.Tests
             Assert.AreEqual(result.jBegin, data.correctAnswer.jBegin);
             Assert.AreEqual(result.jEnd, data.correctAnswer.jEnd);
         }
-        /*
-                // todo : написать TestCaseSource и сам метод RecursiveMultiply
-                public void TestRecursiveMatrixMultipling(int[,] correctAnswer)
-                {
-                    var matrixFirst = MathExtensions.CreateMatrixPart(new int[4, 4] { { 1, 7, 5, 6 }, { 5, 3, 3, 6 }, { 3, 5, 3, 2 }, { 5, 7, 2, 6 } }, PartOfMatrix.LeftTop);
-                    var matrixSecond = new int[2, 2] { { 3, 9 }, { 5, 8 } };
-                    var result = MathExtensions.RecursiveMultiply(matrixFirst, matrixSecond);
-                    Assert.AreEqual(MathExtensions.CompareContent(result, correctAnswer), true);
-                }
-                 */
+
         private static IEnumerable<(Stack<int[,]> data, Stack<MatrixOperation> operations, int[,] correctResult)> Source4TestOperationsMatrixStack()
         {
             Stack<int[,]> data1 = new Stack<int[,]>();
@@ -144,6 +135,31 @@ namespace MatrixMultipling.Tests
         {
             var result = MathExtensions.OperationsMatrix(source.data, source.operations);
             Assert.AreEqual(MathExtensions.CompareContent(result, source.correctResult), true);
+        }
+
+        public static IEnumerable<(Stack<int[,]> data, int[,] correctAnswer)> Source4TestJoinMatrix()
+        {
+            var c11 = new int[,] { { 1, 2 }, { 3, 4 } };
+            var c12 = new int[,] { { 5, 6 }, { 7, 8 } };
+            var c21 = new int[,] { { 9, 10 }, { 11, 12 } };
+            var c22 = new int[,] { { 1, 2 }, { 3, 4 } };
+            var stackMatrix = new Stack<int[,]>();
+            stackMatrix.Push(c22);
+            stackMatrix.Push(c21);
+            stackMatrix.Push(c12);
+            stackMatrix.Push(c11);
+
+            var correctAnswer = new int[,] { { 1, 2, 9, 10 }, { 3, 4, 11, 12 }, { 5, 6, 1, 2 }, { 7, 8, 3, 4 } };
+
+            yield return (stackMatrix, correctAnswer);
+        }
+
+
+        [TestCaseSource(nameof(Source4TestJoinMatrix))]
+        public void TestJoinMatrix((Stack<int[,]> data, int[,] correctAnswer) source)
+        {
+            var result = MathExtensions.Join(source.data);
+            Assert.AreEqual(MathExtensions.CompareContent(result, source.correctAnswer), true);
         }
     }
 }

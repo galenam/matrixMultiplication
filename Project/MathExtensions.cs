@@ -203,5 +203,70 @@ namespace MatrixMultipling.Project
             }
             return result;
         }
+
+        private static bool IsEqualDimension(int[,] first, int[,] second)
+        {
+            if (first == null && second == null) return true;
+            if (first.GetLength(0) != first.GetLength(1) || second.GetLength(0) != second.GetLength(1) ||
+            first.GetLength(0) != second.GetLength(0))
+                return false;
+            return true;
+        }
+
+        // матрицы д.б. квадратными и одного размера
+        public static int[,] Join(Stack<int[,]> matrixStack)
+        {
+            if (matrixStack == null || matrixStack.Count != 4)
+            {
+                throw new ArgumentException("Stack length should be 4");
+            }
+            var c11 = matrixStack.Pop();
+            var c12 = matrixStack.Pop();
+            var c21 = matrixStack.Pop();
+            var c22 = matrixStack.Pop();
+
+            if (!IsEqualDimension(c11, c12) || !IsEqualDimension(c12, c21) || !IsEqualDimension(c21, c22))
+            {
+                throw new ArgumentException("Matrix should be square and equal");
+            }
+
+            var result = new int[c11.GetLength(1) + c12.GetLength(1), c21.GetLength(0) + c22.GetLength(0)];
+            for (var i = 0; i < c11.GetLength(0); i++)
+            {
+                for (var j = 0; j < c11.GetLength(1); j++)
+                {
+                    result[i, j] = c11[i, j];
+                    result[i, j + c11.GetLength(1)] = c21[i, j];
+                    result[i + c11.GetLength(0), j] = c12[i, j];
+                    result[i + c11.GetLength(0), j + c11.GetLength(1)] = c22[i, j];
+                }
+            }
+            return result;
+        }
+
+        private static (int[,] matrix, int iValue) GetSourceAndIterator(int[,] c11, int[,] c12, int[,] c21, int[,] c22, int[,] internalMatrix, int iInternal)
+        {
+            iInternal++;
+
+            if (IsEqualMatrixAndLength(internalMatrix, c11, iInternal))
+            {
+                return (c12, 0);
+            }
+
+            if (IsEqualMatrixAndLength(internalMatrix, c12, iInternal))
+            {
+                return (c21, 0);
+            }
+
+            if (IsEqualMatrixAndLength(internalMatrix, c21, iInternal))
+            {
+                return (c22, 0);
+            }
+            return (internalMatrix, iInternal);
+        }
+
+        private static bool IsEqualMatrixAndLength(int[,] sourceMatrix, int[,] destinationMatrix, int i) => sourceMatrix == destinationMatrix &&
+            destinationMatrix != null && i == destinationMatrix.GetLength(0);
+
     }
 }

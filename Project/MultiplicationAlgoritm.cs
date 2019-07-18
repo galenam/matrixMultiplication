@@ -111,26 +111,13 @@ namespace MatrixMultipling.Project
 
             int[,] p1, p2, p3, p4, p5, p6, p7;
 
-            if (IsSmallEnough(firstPower2.GetLength(0)))
-            {
-                p1 = Classic(a11, s1);
-                p2 = Classic(s2, b22);
-                p3 = Classic(s3, b11);
-                p4 = Classic(a22, s4);
-                p5 = Classic(s5, s6);
-                p6 = Classic(s7, s8);
-                p7 = Classic(s9, s10);
-            }
-            else
-            {
-                p1 = Strassen(a11, s1);
-                p2 = Strassen(s2, b22);
-                p3 = Strassen(s3, b11);
-                p4 = Strassen(a22, s4);
-                p5 = Strassen(s5, s6);
-                p6 = Strassen(s7, s8);
-                p7 = Strassen(s9, s10);
-            }
+            p1 = Strassen(a11, s1);
+            p2 = Strassen(s2, b22);
+            p3 = Strassen(s3, b11);
+            p4 = Strassen(a22, s4);
+            p5 = Strassen(s5, s6);
+            p6 = Strassen(s7, s8);
+            p7 = Strassen(s9, s10);
 
             //var c11 = p5 + p4 - p2 + p6;
             var stactC11 = new Stack<int[,]>();
@@ -145,6 +132,44 @@ namespace MatrixMultipling.Project
             stackOperationsC11.Push(MatrixOperation.Summation);
 
             int[,] c11 = MathExtensions.OperationsMatrix(stactC11, stackOperationsC11);
+
+            //var c12 = p1 + p2;
+            var stactC12 = new Stack<int[,]>();
+            stactC11.Push(p1);
+            stactC11.Push(p2);
+
+            var stackOperationsC12_21 = new Stack<MatrixOperation>();
+            stackOperationsC11.Push(MatrixOperation.Summation);
+
+            int[,] c12 = MathExtensions.OperationsMatrix(stactC12, stackOperationsC12_21);
+
+            //var c21 = p3 + p4;
+            var stactC21 = new Stack<int[,]>();
+            stactC11.Push(p3);
+            stactC11.Push(p4);
+
+            int[,] c21 = MathExtensions.OperationsMatrix(stactC21, stackOperationsC12_21);
+
+            //var c11 = p5 + p1 - p3 - p7;
+            var stactC22 = new Stack<int[,]>();
+            stactC22.Push(p7);
+            stactC22.Push(p3);
+            stactC22.Push(p1);
+            stactC22.Push(p5);
+
+            var stackOperationsC22 = new Stack<MatrixOperation>();
+            stackOperationsC22.Push(MatrixOperation.Subtraction);
+            stackOperationsC22.Push(MatrixOperation.Subtraction);
+            stackOperationsC22.Push(MatrixOperation.Summation);
+
+            int[,] c22 = MathExtensions.OperationsMatrix(stactC22, stackOperationsC22);
+
+            var matrixStack = new Stack<int[,]>();
+            matrixStack.Push(c22);
+            matrixStack.Push(c21);
+            matrixStack.Push(c12);
+            matrixStack.Push(c11);
+            var result = MathExtensions.Join(matrixStack);
 
             throw new NotImplementedException();
         }
