@@ -81,7 +81,7 @@ namespace MatrixMultipling.Tests
             var resultData = MultiplicationAlgoritm.Strassen(m1Data, m2Data);
 
             var correctData = new int[,] { { 64, 127, 70, 100 }, { 39, 94, 65, 57 }, { 47, 85, 63, 92 }, { 53, 106, 72, 84 } };
-            Assert.That(resultData.Equals(correctData));
+            Assert.That(MathExtensions.CompareContent(resultData, correctData));
         }
 
     }

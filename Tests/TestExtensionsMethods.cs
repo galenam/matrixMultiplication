@@ -154,7 +154,6 @@ namespace MatrixMultipling.Tests
             yield return (stackMatrix, correctAnswer);
         }
 
-
         [TestCaseSource(nameof(Source4TestJoinMatrix))]
         public void TestJoinMatrix((Stack<int[,]> data, int[,] correctAnswer) source)
         {

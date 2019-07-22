@@ -40,7 +40,11 @@ namespace MatrixMultipling.Project
                 firstPower2 = MathExtensions.CreateSquareMatrixPower2(first);
                 secondPower2 = MathExtensions.CreateSquareMatrixPower2(second);
             }
+            return StrassenInner(firstPower2, secondPower2);
+        }
 
+        private static int[,] StrassenInner(int[,] firstPower2, int[,] secondPower2)
+        {
             var newHeigth = firstPower2.GetLength(0);
             var newWidth = firstPower2.GetLength(1);
             var values = new int[newHeigth, newWidth];
@@ -111,13 +115,62 @@ namespace MatrixMultipling.Project
 
             int[,] p1, p2, p3, p4, p5, p6, p7;
 
-            p1 = Strassen(a11, s1);
-            p2 = Strassen(s2, b22);
-            p3 = Strassen(s3, b11);
-            p4 = Strassen(a22, s4);
-            p5 = Strassen(s5, s6);
-            p6 = Strassen(s7, s8);
-            p7 = Strassen(s9, s10);
+            if (a11.GetLength(0) == 1)
+            {
+                p1 = Classic(a11, s1);
+            }
+            else
+            {
+                p1 = StrassenInner(a11, s1);
+            }
+            if (b22.GetLength(0) == 1)
+            {
+                p2 = Classic(s2, b22);
+            }
+            else
+            {
+                p2 = StrassenInner(s2, b22);
+            }
+            if (b11.GetLength(0) == 1)
+            {
+                p3 = Classic(s3, b11);
+            }
+            else
+            {
+                p3 = StrassenInner(s3, b11);
+            }
+            if (a22.GetLength(0) == 1)
+            {
+                p4 = Classic(a22, s4);
+            }
+            else
+            {
+                p4 = StrassenInner(a22, s4);
+            }
+            if (s5.GetLength(0) == 1)
+            {
+                p5 = Classic(s5, s6);
+            }
+            else
+            {
+                p5 = StrassenInner(s5, s6);
+            }
+            if (s7.GetLength(0) == 1)
+            {
+                p6 = Classic(s7, s8);
+            }
+            else
+            {
+                p6 = StrassenInner(s7, s8);
+            }
+            if (s9.GetLength(0) == 1)
+            {
+                p7 = Classic(s9, s10);
+            }
+            else
+            {
+                p7 = StrassenInner(s9, s10);
+            }
 
             //var c11 = p5 + p4 - p2 + p6;
             var stactC11 = new Stack<int[,]>();
@@ -135,18 +188,18 @@ namespace MatrixMultipling.Project
 
             //var c12 = p1 + p2;
             var stactC12 = new Stack<int[,]>();
-            stactC11.Push(p1);
-            stactC11.Push(p2);
+            stactC12.Push(p1);
+            stactC12.Push(p2);
 
             var stackOperationsC12_21 = new Stack<MatrixOperation>();
-            stackOperationsC11.Push(MatrixOperation.Summation);
+            stackOperationsC12_21.Push(MatrixOperation.Summation);
 
             int[,] c12 = MathExtensions.OperationsMatrix(stactC12, stackOperationsC12_21);
 
             //var c21 = p3 + p4;
             var stactC21 = new Stack<int[,]>();
-            stactC11.Push(p3);
-            stactC11.Push(p4);
+            stactC21.Push(p3);
+            stactC21.Push(p4);
 
             int[,] c21 = MathExtensions.OperationsMatrix(stactC21, stackOperationsC12_21);
 
@@ -170,8 +223,7 @@ namespace MatrixMultipling.Project
             matrixStack.Push(c12);
             matrixStack.Push(c11);
             var result = MathExtensions.Join(matrixStack);
-
-            throw new NotImplementedException();
+            return result;
         }
 
         public static int[,] Classic(int[,] first, int[,] second)

@@ -236,8 +236,8 @@ namespace MatrixMultipling.Project
                 for (var j = 0; j < c11.GetLength(1); j++)
                 {
                     result[i, j] = c11[i, j];
-                    result[i, j + c11.GetLength(1)] = c21[i, j];
-                    result[i + c11.GetLength(0), j] = c12[i, j];
+                    result[i + c11.GetLength(1), j] = c21[i, j];
+                    result[i, j + c11.GetLength(0)] = c12[i, j];
                     result[i + c11.GetLength(0), j + c11.GetLength(1)] = c22[i, j];
                 }
             }
