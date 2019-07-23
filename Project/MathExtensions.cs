@@ -63,6 +63,23 @@ namespace MatrixMultipling.Project
             return resultMatrix;
         }
 
+        public static int[,] CutNonsignificant0(int[,] source, int fHeight)
+        {
+            if (source == null || fHeight < 1 || fHeight > source.GetLength(0) || source.GetLength(0) != source.GetLength(1))
+            {
+                throw new ArgumentException("Incorrect entries");
+            }
+            var result = new int[fHeight, fHeight];
+            for (var i = 0; i < fHeight; i++)
+            {
+                for (var j = 0; j < fHeight; j++)
+                {
+                    result[i, j] = source[i, j];
+                }
+            }
+            return result;
+        }
+
         public static object CompareUpTo0(int[,] matrixSource, int[,] matrixResult)
         {
             if (matrixResult == null && matrixSource == null) return true;

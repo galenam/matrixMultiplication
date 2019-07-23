@@ -29,8 +29,9 @@ namespace MatrixMultipling.Project
                 throw new ArgumentException("Matrixs are not square");
             }
             int[,] firstPower2, secondPower2;
+            var isPowerOf2 = MathExtensions.IsPowerOfTwo(fHeight);
 
-            if (MathExtensions.IsPowerOfTwo(fHeight))
+            if (isPowerOf2)
             {
                 firstPower2 = first;
                 secondPower2 = second;
@@ -40,7 +41,12 @@ namespace MatrixMultipling.Project
                 firstPower2 = MathExtensions.CreateSquareMatrixPower2(first);
                 secondPower2 = MathExtensions.CreateSquareMatrixPower2(second);
             }
-            return StrassenInner(firstPower2, secondPower2);
+            var result = StrassenInner(firstPower2, secondPower2);
+            if (isPowerOf2)
+            {
+                return result;
+            }
+            return MathExtensions.CutNonsignificant0(result, fHeight);
         }
 
         private static int[,] StrassenInner(int[,] firstPower2, int[,] secondPower2)

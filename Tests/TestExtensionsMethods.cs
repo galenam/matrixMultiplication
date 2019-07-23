@@ -149,7 +149,7 @@ namespace MatrixMultipling.Tests
             stackMatrix.Push(c12);
             stackMatrix.Push(c11);
 
-            var correctAnswer = new int[,] { { 1, 2, 9, 10 }, { 3, 4, 11, 12 }, { 5, 6, 1, 2 }, { 7, 8, 3, 4 } };
+            var correctAnswer = new int[,] { { 1, 2, 5, 6 }, { 3, 4, 7, 8 }, { 9, 10, 1, 2 }, { 11, 12, 3, 4 } };
 
             yield return (stackMatrix, correctAnswer);
         }
@@ -159,6 +159,20 @@ namespace MatrixMultipling.Tests
         {
             var result = MathExtensions.Join(source.data);
             Assert.AreEqual(MathExtensions.CompareContent(result, source.correctAnswer), true);
+        }
+
+        private static IEnumerable<(int[,] source, int rightHeight, int[,] result)> SourceCutNonsignificant0()
+        {
+            var source1 = new int[,] { { 1, 2, 3, 0 }, { 4, 5, 6, 0 }, { 7, 8, 9, 0 }, { 0, 0, 0, 0 } };
+            var result1 = new int[,] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+            yield return (source1, 3, result1);
+        }
+
+        [TestCaseSource(nameof(SourceCutNonsignificant0))]
+        public void TestCutNonsignificant0((int[,] source, int rightHeight, int[,] result) data)
+        {
+            var testResult = MathExtensions.CutNonsignificant0(data.source, data.rightHeight);
+            Assert.AreEqual(MathExtensions.CompareContent(testResult, data.result), true);
         }
     }
 }

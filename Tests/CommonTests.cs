@@ -69,7 +69,7 @@ namespace MatrixMultipling.Tests
             var resultData = MultiplicationAlgoritm.Strassen(m1Data, m2Data);
 
             var correctData = new int[,] { { 28, 73, 43 }, { 39, 94, 65 }, { 23, 49, 45 } };
-            Assert.That(resultData.Equals(correctData));
+            Assert.That(MathExtensions.CompareContent(resultData, correctData));
         }
 
         // todo : тест на матрицу с 8 элементами
