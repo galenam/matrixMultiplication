@@ -48,7 +48,7 @@ namespace MatrixMultipling.Tests
             Assert.NotNull(matrixResult);
             Assert.AreEqual(matrixResult.GetLength(0), matrixResult.GetLength(1));
             Assert.AreEqual(matrixResult.GetLength(0), MathExtensions.GetNearestGreater2Power(matrixResult.GetLength(0)));
-            Assert.AreEqual(MathExtensions.CompareUpTo0(matrixSource, matrixResult), true);
+            Assert.AreEqual(matrixSource.CompareUpTo0(matrixResult), true);
         }
 
         private static IEnumerable<MatrixPart> TestSourcesPart()
@@ -74,7 +74,7 @@ namespace MatrixMultipling.Tests
             mPart.PartSecond = data.PartSecond;
             mPart.Operation = data.Operation;
             var result = MathExtensions.OperationsMatrix(mPart);
-            Assert.AreEqual(MathExtensions.CompareContent(result, data.Data), true);
+            Assert.AreEqual(result.CompareContent(data.Data), true);
         }
 
         private static IEnumerable<(PartOfMatrix, int, (int iBegin, int iEnd, int jBegin, int jEnd))> GetSourceAndDataForTestGetIndexes()
@@ -134,7 +134,7 @@ namespace MatrixMultipling.Tests
         public void TestOperationsMatrixStack((Stack<int[,]> data, Stack<MatrixOperation> operations, int[,] correctResult) source)
         {
             var result = MathExtensions.OperationsMatrix(source.data, source.operations);
-            Assert.AreEqual(MathExtensions.CompareContent(result, source.correctResult), true);
+            Assert.AreEqual(result.CompareContent(source.correctResult), true);
         }
 
         public static IEnumerable<(Stack<int[,]> data, int[,] correctAnswer)> Source4TestJoinMatrix()
@@ -158,7 +158,7 @@ namespace MatrixMultipling.Tests
         public void TestJoinMatrix((Stack<int[,]> data, int[,] correctAnswer) source)
         {
             var result = MathExtensions.Join(source.data);
-            Assert.AreEqual(MathExtensions.CompareContent(result, source.correctAnswer), true);
+            Assert.AreEqual(result.CompareContent(source.correctAnswer), true);
         }
 
         private static IEnumerable<(int[,] source, int rightHeight, int[,] result)> SourceCutNonsignificant0()
@@ -172,7 +172,7 @@ namespace MatrixMultipling.Tests
         public void TestCutNonsignificant0((int[,] source, int rightHeight, int[,] result) data)
         {
             var testResult = MathExtensions.CutNonsignificant0(data.source, data.rightHeight);
-            Assert.AreEqual(MathExtensions.CompareContent(testResult, data.result), true);
+            Assert.AreEqual(testResult.CompareContent(data.result), true);
         }
     }
 }

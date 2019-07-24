@@ -15,14 +15,14 @@ namespace MatrixMultipling.Project
             {
                 throw new ArgumentException("Matrixs are not consistent");
             }
-            var fWidth = first != null ? first.GetLength(1) : 0;
-            var sHeight = second != null ? second.GetLength(0) : 0;
+            var fWidth = first.GetLength(1);
+            var sHeight = second.GetLength(0);
             if (fWidth != sHeight)
             {
                 throw new ArgumentException("Matrixs are not consistent");
             }
-            var fHeight = first != null ? first.GetLength(0) : 0;
-            var sWidth = second != null ? second.GetLength(1) : 0;
+            var fHeight = first.GetLength(0);
+            var sWidth = second.GetLength(1);
 
             if (fHeight != fWidth || sHeight != sWidth)
             {
@@ -238,14 +238,14 @@ namespace MatrixMultipling.Project
             {
                 throw new ArgumentException("Matrixs are not consistent");
             }
-            var fWidth = first != null ? first.GetLength(1) : 0;
-            var sHeight = second != null ? second.GetLength(0) : 0;
+            var fWidth = first.GetLength(1);
+            var sHeight = second.GetLength(0);
             if (fWidth != sHeight)
             {
                 throw new ArgumentException("Matrixs are not consistent");
             }
-            var fHeight = first != null ? first.GetLength(0) : 0;
-            var sWidth = second != null ? second.GetLength(1) : 0;
+            var fHeight = first.GetLength(0);
+            var sWidth = second.GetLength(1);
             var values = new int[fHeight, sWidth];
 
             for (var j = 0; j < sWidth; j++)

@@ -12,30 +12,6 @@ namespace MatrixMultipling.Project
             return (x > 1) && ((x & (x - 1)) == 0);
         }
 
-        public static bool CompareContent(this int[,] first, int[,] second)
-        {
-            if (second == null && first == null) return true;
-            if (second == null || first == null) return false;
-
-            if (object.ReferenceEquals(first, second)) return true;
-
-            var firstWidth = first.GetLength(1);
-            var secondWidth = second.GetLength(1);
-            var firstHeight = first.GetLength(0);
-            var secondHeight = second.GetLength(0);
-
-            if (firstWidth != secondWidth || firstHeight != secondHeight) return false;
-
-            for (var i = 0; i < firstHeight; i++)
-            {
-                for (var j = 0; j < firstWidth; j++)
-                {
-                    if (first[i, j] != second[i, j]) return false;
-                }
-            }
-            return true;
-        }
-
         public static int GetNearestGreater2Power(int value)
         {
             if (IsPowerOfTwo(value)) return value;
@@ -78,31 +54,6 @@ namespace MatrixMultipling.Project
                 }
             }
             return result;
-        }
-
-        public static object CompareUpTo0(int[,] matrixSource, int[,] matrixResult)
-        {
-            if (matrixResult == null && matrixSource == null) return true;
-            if (matrixSource.GetLength(0) != matrixSource.GetLength(1) || matrixResult.GetLength(0) != matrixResult.GetLength(1))
-            {
-                throw new ArgumentException("Matrixs are not square");
-            }
-            for (var i = 0; i < matrixSource.GetLength(0); i++)
-            {
-                for (var j = 0; j > matrixSource.GetLength(0); j++)
-                {
-                    if (matrixSource[i, j] != matrixResult[i, j]) return false;
-                }
-            }
-
-            for (var i = matrixSource.GetLength(0); i < matrixResult.GetLength(0); i++)
-            {
-                for (var j = matrixSource.GetLength(1); j < matrixResult.GetLength(1); j++)
-                {
-                    if (matrixResult[i, j] != 0) return false;
-                }
-            }
-            return true;
         }
 
         public static (int iBegin, int iEnd, int jBegin, int jEnd) GetIndexes(PartOfMatrix part, int dimension)
@@ -260,30 +211,6 @@ namespace MatrixMultipling.Project
             }
             return result;
         }
-
-        private static (int[,] matrix, int iValue) GetSourceAndIterator(int[,] c11, int[,] c12, int[,] c21, int[,] c22, int[,] internalMatrix, int iInternal)
-        {
-            iInternal++;
-
-            if (IsEqualMatrixAndLength(internalMatrix, c11, iInternal))
-            {
-                return (c12, 0);
-            }
-
-            if (IsEqualMatrixAndLength(internalMatrix, c12, iInternal))
-            {
-                return (c21, 0);
-            }
-
-            if (IsEqualMatrixAndLength(internalMatrix, c21, iInternal))
-            {
-                return (c22, 0);
-            }
-            return (internalMatrix, iInternal);
-        }
-
-        private static bool IsEqualMatrixAndLength(int[,] sourceMatrix, int[,] destinationMatrix, int i) => sourceMatrix == destinationMatrix &&
-            destinationMatrix != null && i == destinationMatrix.GetLength(0);
 
     }
 }
