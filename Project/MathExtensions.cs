@@ -95,16 +95,6 @@ namespace MatrixMultipling.Project
             return (iBegin: iBegin, iEnd: iEnd, jBegin: jBegin, jEnd: jEnd);
         }
 
-        public static int[,] OperationsMatrix(MatrixPart mPart)
-        {
-            if (mPart == null || mPart.Data == null) return new int[0, 0];
-
-            var indexesFirst = GetIndexes(mPart.PartFirst, mPart.Data.GetLength(0));
-            var indexesSecond = GetIndexes(mPart.PartSecond, mPart.Data.GetLength(0));
-            var result = OperationMatrixInternal(indexesFirst, indexesSecond, mPart.Operation, mPart.Data);
-            return result;
-        }
-
         private static int[,] OperationMatrixInternal((int iBegin, int iEnd, int jBegin, int jEnd) indexesFirst,
         (int iBegin, int iEnd, int jBegin, int jEnd) indexesSecond, MatrixOperation operation, int[,] dataFirst, int[,] dataSecond = null)
         {
@@ -129,6 +119,15 @@ namespace MatrixMultipling.Project
                 }
             }
             return result;
+        }
+
+        public static (int height, int width) GetMatrixSize(int[,] matrix)
+        {
+            if (matrix == null)
+            {
+                return (0, 0);
+            }
+            return (matrix.GetLength(0), matrix.GetLength(1));
         }
 
         public static int[,] CreateMatrixPart(int[,] v1, PartOfMatrix part)

@@ -50,33 +50,6 @@ namespace MatrixMultipling.Tests
             Assert.AreEqual(matrixResult.GetLength(0), MathExtensions.GetNearestGreater2Power(matrixResult.GetLength(0)));
             Assert.AreEqual(matrixSource.CompareUpTo0(matrixResult), true);
         }
-
-        private static IEnumerable<MatrixPart> TestSourcesPart()
-        {
-            yield return new MatrixPart(new int[,] { { 2, 9 }, { 3, 9 } }) { Operation = MatrixOperation.Summation, PartFirst = PartOfMatrix.LeftTop, PartSecond = PartOfMatrix.RightBottom };
-            yield return new MatrixPart(new int[,] { { 6, 10 }, { 7, 14 } }) { Operation = MatrixOperation.Summation, PartFirst = PartOfMatrix.LeftBottom, PartSecond = PartOfMatrix.RightBottom };
-            yield return new MatrixPart(new int[,] { { 3, -2 }, { 5, 1 } }) { Operation = MatrixOperation.Subtraction, PartFirst = PartOfMatrix.RightTop, PartSecond = PartOfMatrix.RightBottom };
-            yield return new MatrixPart(new int[,] { { 4, 1 }, { 4, 5 } }) { Operation = MatrixOperation.Subtraction, PartFirst = PartOfMatrix.LeftBottom, PartSecond = PartOfMatrix.LeftTop };
-            yield return new MatrixPart(new int[,] { { 5, 7 }, { 8, 10 } }) { Operation = MatrixOperation.Summation, PartFirst = PartOfMatrix.LeftTop, PartSecond = PartOfMatrix.RightTop };
-            yield return new MatrixPart(new int[,] { { 6, 10 }, { 7, 14 } }) { Operation = MatrixOperation.Summation, PartFirst = PartOfMatrix.LeftBottom, PartSecond = PartOfMatrix.RightBottom };
-        }
-
-        [TestCaseSource(nameof(TestSourcesPart))]
-        public void TestMatrixSum(MatrixPart data)
-        {
-            var mPart = new MatrixPart(new int[,] {
-                { 1, 2, 4, 5 },
-                { 3, 4, 5, 6 },
-                { 5, 3, 1, 7 },
-                { 7, 9, 0, 5 } });
-
-            mPart.PartFirst = data.PartFirst;
-            mPart.PartSecond = data.PartSecond;
-            mPart.Operation = data.Operation;
-            var result = MathExtensions.OperationsMatrix(mPart);
-            Assert.AreEqual(result.CompareContent(data.Data), true);
-        }
-
         private static IEnumerable<(PartOfMatrix, int, (int iBegin, int iEnd, int jBegin, int jEnd))> GetSourceAndDataForTestGetIndexes()
         {
             yield return (PartOfMatrix.LeftTop, 8, (0, 4, 0, 4));
