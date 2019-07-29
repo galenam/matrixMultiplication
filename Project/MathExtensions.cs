@@ -19,19 +19,26 @@ namespace MatrixMultipling.Project
             return (int)Math.Pow(2, ((int)Math.Ceiling(Math.Log(value, 2))));
         }
 
+        public static bool IsMatrixSquare(int[,] matrix)
+        {
+            if (matrix == null) return false;
+            var sourceDimension = MathExtensions.GetMatrixSize(matrix);
+            return sourceDimension.height == sourceDimension.width;
+        }
+
         // метод Штрассена умножает только квадратные матрицы
         public static int[,] CreateSquareMatrixPower2(int[,] values)
         {
-            if (values == null || values.GetLength(0) != values.GetLength(1))
+            if (!IsMatrixSquare(values))
             {
                 throw new ArgumentException("Matrix is not square");
             }
-            var sourceDimension = values.GetLength(0);
-            var dimension = IsPowerOfTwo(sourceDimension) ? sourceDimension : GetNearestGreater2Power(sourceDimension);
+            var sourceDimension = MathExtensions.GetMatrixSize(values);
+            var dimension = IsPowerOfTwo(sourceDimension.height) ? sourceDimension.height : GetNearestGreater2Power(sourceDimension.height);
             var resultMatrix = new int[dimension, dimension];
-            for (var i = 0; i < sourceDimension; i++)
+            for (var i = 0; i < sourceDimension.height; i++)
             {
-                for (var j = 0; j < sourceDimension; j++)
+                for (var j = 0; j < sourceDimension.height; j++)
                 {
                     resultMatrix[i, j] = values[i, j];
                 }
@@ -41,7 +48,7 @@ namespace MatrixMultipling.Project
 
         public static int[,] CutNonsignificant0(int[,] source, int fHeight)
         {
-            if (source == null || fHeight < 1 || fHeight > source.GetLength(0) || source.GetLength(0) != source.GetLength(1))
+            if (!IsMatrixSquare(source) || fHeight < 1 || fHeight > source.GetLength(0))
             {
                 throw new ArgumentException("Incorrect entries");
             }
@@ -103,9 +110,10 @@ namespace MatrixMultipling.Project
             {
                 dataSecond = dataFirst;
             }
-            for (var i = 0; i < result.GetLength(0); i++)
+            var sourceDimension = MathExtensions.GetMatrixSize(result);
+            for (var i = 0; i < sourceDimension.height; i++)
             {
-                for (var j = 0; j < result.GetLength(1); j++)
+                for (var j = 0; j < sourceDimension.width; j++)
                 {
                     result[i, j] = dataFirst[indexesFirst.iBegin + i, indexesFirst.jBegin + j];
                     if (operation == MatrixOperation.Subtraction)
@@ -132,20 +140,23 @@ namespace MatrixMultipling.Project
 
         public static int[,] CreateMatrixPart(int[,] v1, PartOfMatrix part)
         {
-            if (v1 == null || v1.GetLength(0) == 0)
+            if (v1 == null)
             {
                 return new int[0, 0];
             }
+            var sourceDimension = MathExtensions.GetMatrixSize(v1);
             var matrix = v1;
-            if (!IsPowerOfTwo(v1.GetLength(0)))
+            if (!IsPowerOfTwo(sourceDimension.height))
             {
                 matrix = CreateSquareMatrixPower2(v1);
             }
-            var indexes = MathExtensions.GetIndexes(part, matrix.GetLength(0));
+
+            var indexes = MathExtensions.GetIndexes(part, sourceDimension.height);
             var data = new int[indexes.iEnd - indexes.iBegin, indexes.jEnd - indexes.jBegin];
-            for (var i = 0; i < data.GetLength(0); i++)
+            var sourceDimensionData = MathExtensions.GetMatrixSize(data);
+            for (var i = 0; i < sourceDimensionData.height; i++)
             {
-                for (var j = 0; j < data.GetLength(1); j++)
+                for (var j = 0; j < sourceDimensionData.width; j++)
                 {
                     data[i, j] = matrix[indexes.iBegin + i, indexes.jBegin + j];
                 }
@@ -165,19 +176,23 @@ namespace MatrixMultipling.Project
             {
                 var dataFirst = result == null ? datas.Pop() : result;
                 var dataSecond = datas.Pop();
-                result = OperationMatrixInternal((0, dataFirst.GetLength(0), 0, dataFirst.GetLength(1)),
-                (0, dataSecond.GetLength(0), 0, dataSecond.GetLength(1)), operation, dataFirst, dataSecond);
+                var sourceDimensionFirst = MathExtensions.GetMatrixSize(dataFirst);
+                var sourceDimensionSecond = MathExtensions.GetMatrixSize(dataSecond);
+                result = OperationMatrixInternal((0, sourceDimensionFirst.height, 0, sourceDimensionFirst.width),
+                (0, sourceDimensionSecond.height, 0, sourceDimensionSecond.width), operation, dataFirst, dataSecond);
             }
             return result;
         }
 
-        private static bool IsEqualDimension(int[,] first, int[,] second)
+        public static bool IsEqualDimension(int[,] first, int[,] second)
         {
             if (first == null && second == null) return true;
-            if (first.GetLength(0) != first.GetLength(1) || second.GetLength(0) != second.GetLength(1) ||
-            first.GetLength(0) != second.GetLength(0))
-                return false;
-            return true;
+            var sourceDimension1 = MathExtensions.GetMatrixSize(first);
+            var sourceDimension2 = MathExtensions.GetMatrixSize(second);
+
+            if (IsMatrixSquare(first) && IsMatrixSquare(second) && sourceDimension1.height == sourceDimension2.height)
+                return true;
+            return false;
         }
 
         // матрицы д.б. квадратными и одного размера
@@ -196,16 +211,17 @@ namespace MatrixMultipling.Project
             {
                 throw new ArgumentException("Matrix should be square and equal");
             }
+            var sourceDimension11 = MathExtensions.GetMatrixSize(c11);
 
-            var result = new int[c11.GetLength(1) + c12.GetLength(1), c21.GetLength(0) + c22.GetLength(0)];
-            for (var i = 0; i < c11.GetLength(0); i++)
+            var result = new int[sourceDimension11.width + c12.GetLength(1), c21.GetLength(0) + c22.GetLength(0)];
+            for (var i = 0; i < sourceDimension11.height; i++)
             {
-                for (var j = 0; j < c11.GetLength(1); j++)
+                for (var j = 0; j < sourceDimension11.height; j++)
                 {
                     result[i, j] = c11[i, j];
-                    result[i + c11.GetLength(1), j] = c21[i, j];
-                    result[i, j + c11.GetLength(0)] = c12[i, j];
-                    result[i + c11.GetLength(0), j + c11.GetLength(1)] = c22[i, j];
+                    result[i + sourceDimension11.height, j] = c21[i, j];
+                    result[i, j + sourceDimension11.width] = c12[i, j];
+                    result[i + sourceDimension11.width, j + sourceDimension11.height] = c22[i, j];
                 }
             }
             return result;

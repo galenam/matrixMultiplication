@@ -1,4 +1,5 @@
 using System;
+using MatrixMultipling.Project;
 
 namespace MatrixMultipling.Tests
 {
@@ -10,17 +11,14 @@ namespace MatrixMultipling.Tests
             if (second == null || first == null) return false;
 
             if (object.ReferenceEquals(first, second)) return true;
+            var sizeFirst = MathExtensions.GetMatrixSize(first);
+            var sizeSecond = MathExtensions.GetMatrixSize(second);
 
-            var firstWidth = first.GetLength(1);
-            var secondWidth = second.GetLength(1);
-            var firstHeight = first.GetLength(0);
-            var secondHeight = second.GetLength(0);
+            if (sizeFirst.height != sizeSecond.height || sizeFirst.width != sizeSecond.width) return false;
 
-            if (firstWidth != secondWidth || firstHeight != secondHeight) return false;
-
-            for (var i = 0; i < firstHeight; i++)
+            for (var i = 0; i < sizeFirst.height; i++)
             {
-                for (var j = 0; j < firstWidth; j++)
+                for (var j = 0; j < sizeFirst.width; j++)
                 {
                     if (first[i, j] != second[i, j]) return false;
                 }
@@ -31,21 +29,22 @@ namespace MatrixMultipling.Tests
         public static bool CompareUpTo0(this int[,] matrixSource, int[,] matrixResult)
         {
             if (matrixResult == null && matrixSource == null) return true;
-            if (matrixSource.GetLength(0) != matrixSource.GetLength(1) || matrixResult.GetLength(0) != matrixResult.GetLength(1))
+            if (!MathExtensions.IsMatrixSquare(matrixSource) || !MathExtensions.IsMatrixSquare(matrixResult))
             {
                 throw new ArgumentException("Matrixs are not square");
             }
-            for (var i = 0; i < matrixSource.GetLength(0); i++)
+            var matrixSourceSize = MathExtensions.GetMatrixSize(matrixSource);
+            for (var i = 0; i < matrixSourceSize.height; i++)
             {
-                for (var j = 0; j > matrixSource.GetLength(0); j++)
+                for (var j = 0; j > matrixSourceSize.width; j++)
                 {
                     if (matrixSource[i, j] != matrixResult[i, j]) return false;
                 }
             }
-
-            for (var i = matrixSource.GetLength(0); i < matrixResult.GetLength(0); i++)
+            var matrixResultSize = MathExtensions.GetMatrixSize(matrixResult);
+            for (var i = matrixSourceSize.height; i < matrixResultSize.height; i++)
             {
-                for (var j = matrixSource.GetLength(1); j < matrixResult.GetLength(1); j++)
+                for (var j = matrixSourceSize.width; j < matrixResultSize.width; j++)
                 {
                     if (matrixResult[i, j] != 0) return false;
                 }

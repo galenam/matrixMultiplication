@@ -11,25 +11,14 @@ namespace MatrixMultipling.Project
         public static bool IsSmallEnough(int dimension) => dimension <= SmallMatrixDimension;
         public static int[,] Strassen(int[,] first, int[,] second)
         {
-            if (first == null || second == null)
-            {
-                throw new ArgumentException("Matrixs are not consistent");
-            }
-            var fWidth = first.GetLength(1);
-            var sHeight = second.GetLength(0);
-            if (fWidth != sHeight)
-            {
-                throw new ArgumentException("Matrixs are not consistent");
-            }
-            var fHeight = first.GetLength(0);
-            var sWidth = second.GetLength(1);
-
-            if (fHeight != fWidth || sHeight != sWidth)
+            if (!MathExtensions.IsEqualDimension(first, second))
             {
                 throw new ArgumentException("Matrixs are not square");
             }
+            var sourceDimension1 = MathExtensions.GetMatrixSize(first);
+
             int[,] firstPower2, secondPower2;
-            var isPowerOf2 = MathExtensions.IsPowerOfTwo(fHeight);
+            var isPowerOf2 = MathExtensions.IsPowerOfTwo(sourceDimension1.height);
 
             if (isPowerOf2)
             {
@@ -46,14 +35,13 @@ namespace MatrixMultipling.Project
             {
                 return result;
             }
-            return MathExtensions.CutNonsignificant0(result, fHeight);
+            return MathExtensions.CutNonsignificant0(result, sourceDimension1.height);
         }
 
         private static int[,] StrassenInner(int[,] firstPower2, int[,] secondPower2)
         {
-            var newHeigth = firstPower2.GetLength(0);
-            var newWidth = firstPower2.GetLength(1);
-            var values = new int[newHeigth, newWidth];
+            var sizes = MathExtensions.GetMatrixSize(firstPower2);
+            var values = new int[sizes.height, sizes.width];
 
             /*  todo: идея : разделить матрицы на 4 подматрицы с размером n/2 * n/2
             вычислить 10 подматриц с операциями сложения-вычитания firstPower2[0, 0] + firstPower2[1, 1]
@@ -211,21 +199,20 @@ namespace MatrixMultipling.Project
             {
                 throw new ArgumentException("Matrixs are not consistent");
             }
-            var fWidth = first.GetLength(1);
-            var sHeight = second.GetLength(0);
-            if (fWidth != sHeight)
+            var sizeFirst = MathExtensions.GetMatrixSize(first);
+            var sizeSecond = MathExtensions.GetMatrixSize(second);
+
+            if (sizeFirst.width != sizeSecond.height)
             {
                 throw new ArgumentException("Matrixs are not consistent");
             }
-            var fHeight = first.GetLength(0);
-            var sWidth = second.GetLength(1);
-            var values = new int[fHeight, sWidth];
+            var values = new int[sizeFirst.height, sizeSecond.width];
 
-            for (var j = 0; j < sWidth; j++)
+            for (var j = 0; j < sizeSecond.width; j++)
             {
-                for (var i = 0; i < fHeight; i++)
+                for (var i = 0; i < sizeFirst.height; i++)
                 {
-                    for (var r = 0; r < fWidth; r++)
+                    for (var r = 0; r < sizeFirst.width; r++)
                     {
                         values[i, j] += first[i, r] * second[r, j];
                     }

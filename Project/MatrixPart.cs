@@ -56,6 +56,5 @@ namespace MatrixMultipling.Project
             }
             return new MatrixPart(result);
         }
-
     }
 }
