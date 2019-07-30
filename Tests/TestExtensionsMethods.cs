@@ -68,48 +68,6 @@ namespace MatrixMultipling.Tests
             Assert.AreEqual(result.jEnd, data.correctAnswer.jEnd);
         }
 
-        private static IEnumerable<(Stack<int[,]> data, Stack<MatrixOperation> operations, int[,] correctResult)> Source4TestOperationsMatrixStack()
-        {
-            Stack<int[,]> data1 = new Stack<int[,]>();
-            data1.Push(new int[2, 2] { { 1, 2 }, { 4, 5 } });
-            data1.Push(new int[2, 2] { { 3, 2 }, { 4, 7 } });
-            data1.Push(new int[2, 2] { { 9, 0 }, { 2, 6 } });
-            data1.Push(new int[2, 2] { { 7, 8 }, { 3, 0 } });
-
-            var operations1 = new Stack<MatrixOperation>();
-            operations1.Push(MatrixOperation.Summation);
-            operations1.Push(MatrixOperation.Subtraction);
-            operations1.Push(MatrixOperation.Summation);
-            yield return (data1, operations1, new int[2, 2] { { 14, 8 }, { 5, 4 } });
-
-            Stack<int[,]> data2 = new Stack<int[,]>();
-            data2.Push(new int[2, 2] { { 1, 2 }, { 4, 5 } });
-            data2.Push(new int[2, 2] { { 3, 2 }, { 4, 7 } });
-
-            var operations2 = new Stack<MatrixOperation>();
-            operations2.Push(MatrixOperation.Summation);
-            yield return (data2, operations2, new int[2, 2] { { 4, 4 }, { 8, 12 } });
-
-            Stack<int[,]> data3 = new Stack<int[,]>();
-            data3.Push(new int[2, 2] { { 1, 2 }, { 4, 5 } });
-            data3.Push(new int[2, 2] { { 3, 2 }, { 4, 7 } });
-            data3.Push(new int[2, 2] { { 9, 0 }, { 2, 6 } });
-            data3.Push(new int[2, 2] { { 7, 8 }, { 3, 0 } });
-
-            var operations3 = new Stack<MatrixOperation>();
-            operations3.Push(MatrixOperation.Subtraction);
-            operations3.Push(MatrixOperation.Subtraction);
-            operations3.Push(MatrixOperation.Summation);
-            yield return (data3, operations3, new int[2, 2] { { 12, 4 }, { -3, -6 } });
-        }
-
-        [TestCaseSource(nameof(Source4TestOperationsMatrixStack))]
-        public void TestOperationsMatrixStack((Stack<int[,]> data, Stack<MatrixOperation> operations, int[,] correctResult) source)
-        {
-            var result = MathExtensions.OperationsMatrix(source.data, source.operations);
-            Assert.AreEqual(result.CompareContent(source.correctResult), true);
-        }
-
         public static IEnumerable<(int[,] c11, int[,] c12, int[,] c21, int[,] c22, int[,] correctAnswer)> Source4TestJoinMatrix()
         {
             var c11 = new int[,] { { 1, 2 }, { 3, 4 } };

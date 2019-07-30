@@ -1,6 +1,6 @@
 namespace MatrixMultipling.Project.Enums
 {
-    public enum MatrixOperation
+    internal enum MatrixOperation
     {
         Summation,
         Subtraction

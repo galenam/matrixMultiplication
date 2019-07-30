@@ -164,26 +164,6 @@ namespace MatrixMultipling.Project
             return data;
         }
 
-        public static int[,] OperationsMatrix(Stack<int[,]> datas, Stack<MatrixOperation> operations)
-        {
-            if (datas == null || !datas.Any() || operations == null || !operations.Any() || operations.Count != datas.Count - 1
-            || operations.Count < 1 || datas.Count < 2)
-            {
-                return new int[0, 0];
-            }
-            int[,] result = null;
-            foreach (var operation in operations)
-            {
-                var dataFirst = result == null ? datas.Pop() : result;
-                var dataSecond = datas.Pop();
-                var sourceDimensionFirst = MathExtensions.GetMatrixSize(dataFirst);
-                var sourceDimensionSecond = MathExtensions.GetMatrixSize(dataSecond);
-                result = OperationMatrixInternal((0, sourceDimensionFirst.height, 0, sourceDimensionFirst.width),
-                (0, sourceDimensionSecond.height, 0, sourceDimensionSecond.width), operation, dataFirst, dataSecond);
-            }
-            return result;
-        }
-
         public static bool IsEqualDimension(int[,] first, int[,] second)
         {
             if (first == null && second == null) return true;

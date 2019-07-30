@@ -16,7 +16,6 @@ namespace MatrixMultipling.Project
             Data = v1;
         }
 
-        // todo сделать метод, который возвращает tuple с высотой и шириной матрицы, использовать его везде
         public static MatrixPart operator +(MatrixPart first, MatrixPart second)
         {
             return Operation(first, second, MatrixOperation.Summation);
