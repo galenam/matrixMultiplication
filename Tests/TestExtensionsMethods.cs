@@ -110,27 +110,22 @@ namespace MatrixMultipling.Tests
             Assert.AreEqual(result.CompareContent(source.correctResult), true);
         }
 
-        public static IEnumerable<(Stack<int[,]> data, int[,] correctAnswer)> Source4TestJoinMatrix()
+        public static IEnumerable<(int[,] c11, int[,] c12, int[,] c21, int[,] c22, int[,] correctAnswer)> Source4TestJoinMatrix()
         {
             var c11 = new int[,] { { 1, 2 }, { 3, 4 } };
             var c12 = new int[,] { { 5, 6 }, { 7, 8 } };
             var c21 = new int[,] { { 9, 10 }, { 11, 12 } };
             var c22 = new int[,] { { 1, 2 }, { 3, 4 } };
-            var stackMatrix = new Stack<int[,]>();
-            stackMatrix.Push(c22);
-            stackMatrix.Push(c21);
-            stackMatrix.Push(c12);
-            stackMatrix.Push(c11);
 
             var correctAnswer = new int[,] { { 1, 2, 5, 6 }, { 3, 4, 7, 8 }, { 9, 10, 1, 2 }, { 11, 12, 3, 4 } };
 
-            yield return (stackMatrix, correctAnswer);
+            yield return (c11, c12, c21, c22, correctAnswer);
         }
 
         [TestCaseSource(nameof(Source4TestJoinMatrix))]
-        public void TestJoinMatrix((Stack<int[,]> data, int[,] correctAnswer) source)
+        public void TestJoinMatrix((int[,] c11, int[,] c12, int[,] c21, int[,] c22, int[,] correctAnswer) source)
         {
-            var result = MathExtensions.Join(source.data);
+            var result = MathExtensions.Join(source.c11, source.c12, source.c21, source.c22);
             Assert.AreEqual(result.CompareContent(source.correctAnswer), true);
         }
 
