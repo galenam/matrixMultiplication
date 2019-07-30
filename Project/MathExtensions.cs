@@ -196,17 +196,8 @@ namespace MatrixMultipling.Project
         }
 
         // матрицы д.б. квадратными и одного размера
-        public static int[,] Join(Stack<int[,]> matrixStack)
+        public static int[,] Join(int[,] c11, int[,] c12, int[,] c21, int[,] c22)
         {
-            if (matrixStack == null || matrixStack.Count != 4)
-            {
-                throw new ArgumentException("Stack length should be 4");
-            }
-            var c11 = matrixStack.Pop();
-            var c12 = matrixStack.Pop();
-            var c21 = matrixStack.Pop();
-            var c22 = matrixStack.Pop();
-
             if (!IsEqualDimension(c11, c12) || !IsEqualDimension(c12, c21) || !IsEqualDimension(c21, c22))
             {
                 throw new ArgumentException("Matrix should be square and equal");

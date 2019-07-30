@@ -59,138 +59,47 @@ namespace MatrixMultipling.Project
             var b21 = new MatrixPart(secondPower2, PartOfMatrix.LeftBottom);
             var b22 = new MatrixPart(secondPower2, PartOfMatrix.RightBottom);
 
-            //s1 = b12-b22
             var s1 = b12 - b22;
-            //s2=a11+a12
             var s2 = a11 + a12;
-            //s3=a21+a22
             var s3 = a21 + a22;
-            //s4=b21-b11;
             var s4 = b21 - b11;
-            //s5=a11+a22
             var s5 = a11 + a22;
-            //s6=b11+b22
             var s6 = b11 + b22;
-            //s7=a12-a22
             var s7 = a12 - a22;
-            //s8=b21+b22
             var s8 = b21 + b22;
-            //s9=a11-a21
             var s9 = a11 - a21;
-            //s10=b11+b12
             var s10 = b11 + b12;
 
-            int[,] p1, p2, p3, p4, p5, p6, p7;
+            var p1 = ChooseMultiplicationAlgorithm(a11, s1);
+            var p2 = ChooseMultiplicationAlgorithm(s2, b22);
+            var p3 = ChooseMultiplicationAlgorithm(s3, b11);
+            var p4 = ChooseMultiplicationAlgorithm(a22, s4);
+            var p5 = ChooseMultiplicationAlgorithm(s5, s6);
+            var p6 = ChooseMultiplicationAlgorithm(s7, s8);
+            var p7 = ChooseMultiplicationAlgorithm(s9, s10);
 
-            if (a11.Data.GetLength(0) == 1)
-            {
-                p1 = Classic(a11.Data, s1.Data);
-            }
-            else
-            {
-                p1 = StrassenInner(a11.Data, s1.Data);
-            }
-            if (b22.Data.GetLength(0) == 1)
-            {
-                p2 = Classic(s2.Data, b22.Data);
-            }
-            else
-            {
-                p2 = StrassenInner(s2.Data, b22.Data);
-            }
-            if (b11.Data.GetLength(0) == 1)
-            {
-                p3 = Classic(s3.Data, b11.Data);
-            }
-            else
-            {
-                p3 = StrassenInner(s3.Data, b11.Data);
-            }
-            if (a22.Data.GetLength(0) == 1)
-            {
-                p4 = Classic(a22.Data, s4.Data);
-            }
-            else
-            {
-                p4 = StrassenInner(a22.Data, s4.Data);
-            }
-            if (s5.Data.GetLength(0) == 1)
-            {
-                p5 = Classic(s5.Data, s6.Data);
-            }
-            else
-            {
-                p5 = StrassenInner(s5.Data, s6.Data);
-            }
-            if (s7.Data.GetLength(0) == 1)
-            {
-                p6 = Classic(s7.Data, s8.Data);
-            }
-            else
-            {
-                p6 = StrassenInner(s7.Data, s8.Data);
-            }
-            if (s9.Data.GetLength(0) == 1)
-            {
-                p7 = Classic(s9.Data, s10.Data);
-            }
-            else
-            {
-                p7 = StrassenInner(s9.Data, s10.Data);
-            }
+            var c11 = p5 + p4 - p2 + p6;
+            var c12 = p1 + p2;
+            var c21 = p3 + p4;
+            var c22 = p5 + p1 - p3 - p7;
 
-            //var c11 = p5 + p4 - p2 + p6;
-            var stactC11 = new Stack<int[,]>();
-            stactC11.Push(p6);
-            stactC11.Push(p2);
-            stactC11.Push(p4);
-            stactC11.Push(p5);
-
-            var stackOperationsC11 = new Stack<MatrixOperation>();
-            stackOperationsC11.Push(MatrixOperation.Summation);
-            stackOperationsC11.Push(MatrixOperation.Subtraction);
-            stackOperationsC11.Push(MatrixOperation.Summation);
-
-            int[,] c11 = MathExtensions.OperationsMatrix(stactC11, stackOperationsC11);
-
-            //var c12 = p1 + p2;
-            var stactC12 = new Stack<int[,]>();
-            stactC12.Push(p1);
-            stactC12.Push(p2);
-
-            var stackOperationsC12_21 = new Stack<MatrixOperation>();
-            stackOperationsC12_21.Push(MatrixOperation.Summation);
-
-            int[,] c12 = MathExtensions.OperationsMatrix(stactC12, stackOperationsC12_21);
-
-            //var c21 = p3 + p4;
-            var stactC21 = new Stack<int[,]>();
-            stactC21.Push(p3);
-            stactC21.Push(p4);
-
-            int[,] c21 = MathExtensions.OperationsMatrix(stactC21, stackOperationsC12_21);
-
-            //var c11 = p5 + p1 - p3 - p7;
-            var stactC22 = new Stack<int[,]>();
-            stactC22.Push(p7);
-            stactC22.Push(p3);
-            stactC22.Push(p1);
-            stactC22.Push(p5);
-
-            var stackOperationsC22 = new Stack<MatrixOperation>();
-            stackOperationsC22.Push(MatrixOperation.Subtraction);
-            stackOperationsC22.Push(MatrixOperation.Subtraction);
-            stackOperationsC22.Push(MatrixOperation.Summation);
-
-            int[,] c22 = MathExtensions.OperationsMatrix(stactC22, stackOperationsC22);
-
-            var matrixStack = new Stack<int[,]>();
-            matrixStack.Push(c22);
-            matrixStack.Push(c21);
-            matrixStack.Push(c12);
-            matrixStack.Push(c11);
-            var result = MathExtensions.Join(matrixStack);
+            var result = MathExtensions.Join(c11.Data, c12.Data, c21.Data, c22.Data);
             return result;
+        }
+
+        private static MatrixPart ChooseMultiplicationAlgorithm(MatrixPart first, MatrixPart second)
+        {
+            int[,] result;
+            if (first.Data.GetLength(0) == 1)
+            {
+                result = Classic(first.Data, second.Data);
+            }
+            else
+            {
+                result = StrassenInner(first.Data, second.Data);
+            }
+
+            return new MatrixPart(result);
         }
 
         public static int[,] Classic(int[,] first, int[,] second)
